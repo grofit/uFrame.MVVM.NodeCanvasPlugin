@@ -11,5 +11,10 @@ using UnityEngine;
 using UniRx;
 
 
-public partial class TestViewModel : TestViewModelBase {
+public partial class TestViewModel : TestViewModelBase
+{
+    public override bool ComputeIsNameFrank()
+    {
+        return Name.ToLower().Equals("frank");
+    }
 }

@@ -23,6 +23,10 @@ using UniRx;
 
 public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
     
+    private System.IDisposable _IsNameFrankDisposable;
+    
+    private P<Boolean> _IsNameFrankProperty;
+    
     private P<String> _NameProperty;
     
     private P<Boolean> _IsAmazingProperty;
@@ -35,6 +39,15 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
     
     public TestViewModelBase(uFrame.Kernel.IEventAggregator aggregator) : 
             base(aggregator) {
+    }
+    
+    public virtual P<Boolean> IsNameFrankProperty {
+        get {
+            return _IsNameFrankProperty;
+        }
+        set {
+            _IsNameFrankProperty = value;
+        }
     }
     
     public virtual P<String> NameProperty {
@@ -61,6 +74,15 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         }
         set {
             _ComplexProperty = value;
+        }
+    }
+    
+    public virtual Boolean IsNameFrank {
+        get {
+            return IsNameFrankProperty.Value;
+        }
+        set {
+            IsNameFrankProperty.Value = value;
         }
     }
     
@@ -113,9 +135,11 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         base.Bind();
         this.DoSomething = new Signal<DoSomethingCommand>(this);
         this.DoSomethingElse = new Signal<DoSomethingElseCommand>(this);
+        _IsNameFrankProperty = new P<Boolean>(this, "IsNameFrank");
         _NameProperty = new P<String>(this, "Name");
         _IsAmazingProperty = new P<Boolean>(this, "IsAmazing");
         _ComplexProperty = new P<AmazingClass>(this, "Complex");
+        ResetIsNameFrank();
     }
     
     public virtual void ExecuteDoSomething() {
@@ -144,12 +168,30 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
     
     protected override void FillProperties(System.Collections.Generic.List<uFrame.MVVM.ViewModelPropertyInfo> list) {
         base.FillProperties(list);
+        // ComputedPropertyNode
+        list.Add(new ViewModelPropertyInfo(_IsNameFrankProperty, false, false, false, true));
         // PropertiesChildItem
         list.Add(new ViewModelPropertyInfo(_NameProperty, false, false, false, false));
         // PropertiesChildItem
         list.Add(new ViewModelPropertyInfo(_IsAmazingProperty, false, false, false, false));
         // PropertiesChildItem
         list.Add(new ViewModelPropertyInfo(_ComplexProperty, false, false, false, false));
+    }
+    
+    public virtual System.Collections.Generic.IEnumerable<uFrame.MVVM.IObservableProperty> GetIsNameFrankDependents() {
+        yield return NameProperty;
+        yield break;
+    }
+    
+    public virtual void ResetIsNameFrank() {
+        if (_IsNameFrankDisposable != null) {
+            _IsNameFrankDisposable.Dispose();
+        }
+        _IsNameFrankDisposable = _IsNameFrankProperty.ToComputed(ComputeIsNameFrank, this.GetIsNameFrankDependents().ToArray()).DisposeWith(this);
+    }
+    
+    public virtual Boolean ComputeIsNameFrank() {
+        return default(Boolean);
     }
 }
 

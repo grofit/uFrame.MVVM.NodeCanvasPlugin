@@ -23,6 +23,9 @@ namespace NodeCanvasGenerator.Editor
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, GetPropertyActionsTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, CheckPropertyActionsTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandsChildItem, ExecuteCommandsActionsTemplate>();
+
+            framework.ComputedProperty.AddCodeTemplate<ComputedPropertyActionsTemplate>();
+            framework.ComputedProperty.AddCodeTemplate<CheckComputedPropertyActionsTemplate>();
         }
     }
 }

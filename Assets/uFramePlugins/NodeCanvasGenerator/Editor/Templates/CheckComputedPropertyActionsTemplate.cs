@@ -2,15 +2,18 @@ using System.CodeDom;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using NodeCanvas.Framework;
+using NodeCanvasGenerator.Extensions;
 using ParadoxNotion.Design;
 using uFrame.Graphs;
+using uFrame.MVVM;
+using UnityEngine;
 
 namespace NodeCanvasGenerator.Templates
 {
-    [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "Set{0}Action")]
-    public class SetPropertyActionsTemplate : IClassTemplate<PropertiesChildItem>
+    [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "Check{0}Action")]
+    public class CheckComputedPropertyActionsTemplate : IClassTemplate<ComputedPropertyNode>
     {
-        public TemplateContext<PropertiesChildItem> Ctx { get; set; }
+        public TemplateContext<ComputedPropertyNode> Ctx { get; set; }
 
         public string OutputPath
         {
@@ -19,20 +22,30 @@ namespace NodeCanvasGenerator.Templates
 
         public bool CanGenerate
         {
-            get { return Ctx.Data.Node is ElementNode; }
+            get { return ComputedNode.Container() is ElementNode && Ctx.Data.RelatedTypeName == "Boolean"; }
+        }
+
+        private ComputedPropertyNode ComputedNode
+        {
+            get { return Ctx.Data.Node as ComputedPropertyNode; }
+        }
+
+        private string ContainerName
+        {
+            get { return ComputedNode.Container().Name; }
         }
 
         private void SetupClass()
         {
             Ctx.CurrentDeclaration.IsPartial = false;
 
-            Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", Ctx.Data.Node.Name.AsViewModel()));
-            Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Set {0}\"", Ctx.Data.Name));
+            Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", ContainerName.AsViewModel()));
+            Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Check {0}\"", Ctx.Data.Name));
+            Ctx.AddAttribute(typeof(RequireComponent), "typeof(ViewBase)");
 
             var codeType = new CodeTypeOfExpression("ViewBase");
             Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration("AgentType", new CodeAttributeArgument(codeType)));
-
-            Ctx.SetBaseType(typeof(ActionTask));
+            Ctx.SetBaseType(typeof(ConditionTask));
         }
 
         private void SetupNamespaceDependencies()
@@ -44,10 +57,7 @@ namespace NodeCanvasGenerator.Templates
 
         private void SetupMembers()
         {
-            var valueField = Ctx.CurrentDeclaration._public_(Ctx.ProcessType(typeof(BBParameter<_ITEMTYPE_>)), "NewValue");
-            valueField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(RequiredFieldAttribute)), new CodeAttributeArgument[] { }));
-
-            Ctx.CurrentDeclaration._private_(Ctx.Data.Node.Name.AsViewModel(), "_viewModel");
+            Ctx.CurrentDeclaration._private_(ContainerName.AsViewModel(), "_viewModel");
             Ctx.CurrentDeclaration._private_("ViewBase", "_view");
         }
 
@@ -57,14 +67,14 @@ namespace NodeCanvasGenerator.Templates
             SetupClass();
             SetupMembers();
         }
-        
+
         [GenerateProperty]
         protected string info
         {
             get
             {
                 Ctx.CurrentProperty.Attributes = MemberAttributes.Override | MemberAttributes.Family;
-                Ctx._("return \"Set {0} On {1}\"", Ctx.Data.Name, Ctx.Data.Node.Name.AsViewModel());
+                Ctx._("return \"{0}'s {1}\"", ContainerName.AsViewModel(), Ctx.Data.Name);
                 return null;
             }
         }
@@ -78,15 +88,16 @@ namespace NodeCanvasGenerator.Templates
         }
         
         [GenerateMethod, AsOverride]
-        protected void OnExecute()
+        protected bool OnCheck()
         {
             var ifViewBoundStatement = Ctx._if("_view.IsBound");
-            ifViewBoundStatement.FalseStatements._("EndAction(false); return");
-            var ifViewModelIsEmpty = ifViewBoundStatement.TrueStatements._if("_viewModel == null");
-            ifViewModelIsEmpty.TrueStatements._("_viewModel = _view.ViewModelObject as {0}", Ctx.Data.Node.Name.AsViewModel());
+            ifViewBoundStatement.FalseStatements._("return false");
 
-            Ctx._("_viewModel.{0} = NewValue.value", Ctx.Data.Name);
-            Ctx._("EndAction(true)");
+            var ifViewModelIsEmpty = ifViewBoundStatement.TrueStatements._if("_viewModel == null");
+            ifViewModelIsEmpty.TrueStatements._("_viewModel = _view.ViewModelObject as {0}", ContainerName.AsViewModel());
+
+            Ctx._("return _viewModel.{0}", Ctx.Data.Name);
+            return true;
         }
     }
 }

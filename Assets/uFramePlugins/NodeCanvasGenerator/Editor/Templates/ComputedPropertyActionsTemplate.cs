@@ -7,10 +7,10 @@ using uFrame.Graphs;
 
 namespace NodeCanvasGenerator.Templates
 {
-    [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "Set{0}Action")]
-    public class SetPropertyActionsTemplate : IClassTemplate<PropertiesChildItem>
+    [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "Get{0}Action")]
+    public class ComputedPropertyActionsTemplate : IClassTemplate<ComputedPropertyNode>
     {
-        public TemplateContext<PropertiesChildItem> Ctx { get; set; }
+        public TemplateContext<ComputedPropertyNode> Ctx { get; set; }
 
         public string OutputPath
         {
@@ -19,15 +19,25 @@ namespace NodeCanvasGenerator.Templates
 
         public bool CanGenerate
         {
-            get { return Ctx.Data.Node is ElementNode; }
+            get { return ComputedNode.Container() is ElementNode; }
+        }
+
+        private ComputedPropertyNode ComputedNode
+        {
+            get { return Ctx.Data.Node as ComputedPropertyNode; }
+        }
+
+        private string ContainerName
+        {
+            get { return ComputedNode.Container().Name;  }
         }
 
         private void SetupClass()
         {
             Ctx.CurrentDeclaration.IsPartial = false;
 
-            Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", Ctx.Data.Node.Name.AsViewModel()));
-            Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Set {0}\"", Ctx.Data.Name));
+            Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", ContainerName.AsViewModel()));
+            Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Get {0}\"", Ctx.Data.Name));
 
             var codeType = new CodeTypeOfExpression("ViewBase");
             Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration("AgentType", new CodeAttributeArgument(codeType)));
@@ -44,10 +54,10 @@ namespace NodeCanvasGenerator.Templates
 
         private void SetupMembers()
         {
-            var valueField = Ctx.CurrentDeclaration._public_(Ctx.ProcessType(typeof(BBParameter<_ITEMTYPE_>)), "NewValue");
-            valueField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(RequiredFieldAttribute)), new CodeAttributeArgument[] { }));
+            var valueField = Ctx.CurrentDeclaration._public_(Ctx.ProcessType(typeof(BBParameter<_ITEMTYPE_>)), "CurrentValue");
+            valueField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(BlackboardOnlyAttribute)), new CodeAttributeArgument[] { }));
 
-            Ctx.CurrentDeclaration._private_(Ctx.Data.Node.Name.AsViewModel(), "_viewModel");
+            Ctx.CurrentDeclaration._private_(ContainerName.AsViewModel(), "_viewModel");
             Ctx.CurrentDeclaration._private_("ViewBase", "_view");
         }
 
@@ -57,14 +67,14 @@ namespace NodeCanvasGenerator.Templates
             SetupClass();
             SetupMembers();
         }
-        
+
         [GenerateProperty]
         protected string info
         {
             get
             {
                 Ctx.CurrentProperty.Attributes = MemberAttributes.Override | MemberAttributes.Family;
-                Ctx._("return \"Set {0} On {1}\"", Ctx.Data.Name, Ctx.Data.Node.Name.AsViewModel());
+                Ctx._("return \"Get {0} From {1}\"", Ctx.Data.Name, ContainerName.AsViewModel());
                 return null;
             }
         }
@@ -83,9 +93,9 @@ namespace NodeCanvasGenerator.Templates
             var ifViewBoundStatement = Ctx._if("_view.IsBound");
             ifViewBoundStatement.FalseStatements._("EndAction(false); return");
             var ifViewModelIsEmpty = ifViewBoundStatement.TrueStatements._if("_viewModel == null");
-            ifViewModelIsEmpty.TrueStatements._("_viewModel = _view.ViewModelObject as {0}", Ctx.Data.Node.Name.AsViewModel());
+            ifViewModelIsEmpty.TrueStatements._("_viewModel = _view.ViewModelObject as {0}", ContainerName.AsViewModel());
 
-            Ctx._("_viewModel.{0} = NewValue.value", Ctx.Data.Name);
+            Ctx._("CurrentValue.value = _viewModel.{0}", Ctx.Data.Name);
             Ctx._("EndAction(true)");
         }
     }

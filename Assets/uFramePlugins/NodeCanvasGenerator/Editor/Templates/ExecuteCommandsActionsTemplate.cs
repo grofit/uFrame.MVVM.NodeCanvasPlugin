@@ -31,7 +31,6 @@ namespace NodeCanvasGenerator.Templates
 
             var codeType = new CodeTypeOfExpression("ViewBase");
             Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration("AgentType", new CodeAttributeArgument(codeType)));
-            Ctx.SetBaseType(typeof(ConditionTask));
 
             Ctx.SetBaseType(typeof(ActionTask));
         }

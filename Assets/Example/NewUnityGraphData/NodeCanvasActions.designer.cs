@@ -343,3 +343,74 @@ public class GetComplexAction : NodeCanvas.Framework.ActionTask {
         EndAction(true);
     }
 }
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Get IsNameFrank")]
+[AgentType(typeof(ViewBase))]
+public class GetIsNameFrankAction : NodeCanvas.Framework.ActionTask {
+    
+    [NodeCanvas.Framework.BlackboardOnlyAttribute()]
+    public BBParameter<Boolean> CurrentValue;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "Get IsNameFrank From TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        CurrentValue.value = _viewModel.IsNameFrank;
+        EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Check IsNameFrank")]
+[UnityEngine.RequireComponent(typeof(ViewBase))]
+[AgentType(typeof(ViewBase))]
+public class CheckIsNameFrankAction : NodeCanvas.Framework.ConditionTask {
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "TestViewModel's IsNameFrank";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override bool OnCheck() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            return false;
+        }
+        return _viewModel.IsNameFrank;
+    }
+}
