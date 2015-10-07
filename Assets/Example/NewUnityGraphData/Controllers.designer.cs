@@ -12,11 +12,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using uFrame.Serialization;
-using uFrame.MVVM;
-using UniRx;
 using uFrame.IOC;
 using uFrame.Kernel;
+using uFrame.MVVM;
+using uFrame.Serialization;
+using UniRx;
 
 
 public class TestControllerBase : uFrame.MVVM.Controller {

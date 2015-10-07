@@ -19,6 +19,7 @@ using uFrame.MVVM;
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Set Name")]
+[AgentType(typeof(ViewBase))]
 public class SetNameAction : NodeCanvas.Framework.ActionTask {
     
     [ParadoxNotion.Design.RequiredFieldAttribute()]
@@ -55,6 +56,7 @@ public class SetNameAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Get Name")]
+[AgentType(typeof(ViewBase))]
 public class GetNameAction : NodeCanvas.Framework.ActionTask {
     
     [NodeCanvas.Framework.BlackboardOnlyAttribute()]
@@ -91,6 +93,7 @@ public class GetNameAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Execute DoSomething")]
+[AgentType(typeof(ViewBase))]
 public class ExecuteDoSomethingAction : NodeCanvas.Framework.ActionTask {
     
     private TestViewModel _viewModel;
@@ -124,6 +127,7 @@ public class ExecuteDoSomethingAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Execute DoSomethingElse")]
+[AgentType(typeof(ViewBase))]
 public class ExecuteDoSomethingElseAction : NodeCanvas.Framework.ActionTask {
     
     private TestViewModel _viewModel;
@@ -160,6 +164,7 @@ public class ExecuteDoSomethingElseAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Set IsAmazing")]
+[AgentType(typeof(ViewBase))]
 public class SetIsAmazingAction : NodeCanvas.Framework.ActionTask {
     
     [ParadoxNotion.Design.RequiredFieldAttribute()]
@@ -196,6 +201,7 @@ public class SetIsAmazingAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Get IsAmazing")]
+[AgentType(typeof(ViewBase))]
 public class GetIsAmazingAction : NodeCanvas.Framework.ActionTask {
     
     [NodeCanvas.Framework.BlackboardOnlyAttribute()]
@@ -232,6 +238,8 @@ public class GetIsAmazingAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Check IsAmazing")]
+[UnityEngine.RequireComponent(typeof(ViewBase))]
+[AgentType(typeof(ViewBase))]
 public class CheckIsAmazingAction : NodeCanvas.Framework.ConditionTask {
     
     private TestViewModel _viewModel;
@@ -264,6 +272,7 @@ public class CheckIsAmazingAction : NodeCanvas.Framework.ConditionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Set Complex")]
+[AgentType(typeof(ViewBase))]
 public class SetComplexAction : NodeCanvas.Framework.ActionTask {
     
     [ParadoxNotion.Design.RequiredFieldAttribute()]
@@ -300,6 +309,7 @@ public class SetComplexAction : NodeCanvas.Framework.ActionTask {
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Get Complex")]
+[AgentType(typeof(ViewBase))]
 public class GetComplexAction : NodeCanvas.Framework.ActionTask {
     
     [NodeCanvas.Framework.BlackboardOnlyAttribute()]

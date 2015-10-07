@@ -29,6 +29,10 @@ namespace NodeCanvasGenerator.Templates
             Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", Ctx.Data.Node.Name.AsViewModel()));
             Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Get {0}\"", Ctx.Data.Name));
 
+            var codeType = new CodeTypeOfExpression("ViewBase");
+            Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration("AgentType", new CodeAttributeArgument(codeType)));
+            Ctx.SetBaseType(typeof(ConditionTask));
+
             Ctx.SetBaseType(typeof(ActionTask));
         }
 

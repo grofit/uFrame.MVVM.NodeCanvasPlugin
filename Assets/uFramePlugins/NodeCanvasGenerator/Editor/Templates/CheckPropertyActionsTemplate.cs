@@ -2,8 +2,11 @@ using System.CodeDom;
 using Invert.Core.GraphDesigner;
 using Invert.uFrame.MVVM;
 using NodeCanvas.Framework;
+using NodeCanvasGenerator.Extensions;
 using ParadoxNotion.Design;
 using uFrame.Graphs;
+using uFrame.MVVM;
+using UnityEngine;
 
 namespace NodeCanvasGenerator.Templates
 {
@@ -28,7 +31,10 @@ namespace NodeCanvasGenerator.Templates
 
             Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", Ctx.Data.Node.Name.AsViewModel()));
             Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Check {0}\"", Ctx.Data.Name));
+            Ctx.AddAttribute(typeof(RequireComponent), "typeof(ViewBase)");
 
+            var codeType = new CodeTypeOfExpression("ViewBase");
+            Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration("AgentType", new CodeAttributeArgument(codeType)));
             Ctx.SetBaseType(typeof(ConditionTask));
         }
 
