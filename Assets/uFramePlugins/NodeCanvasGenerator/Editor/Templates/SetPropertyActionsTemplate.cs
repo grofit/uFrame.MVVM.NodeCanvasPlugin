@@ -1,5 +1,6 @@
 using System.CodeDom;
 using Invert.Core.GraphDesigner;
+using Invert.StateMachine;
 using Invert.uFrame.MVVM;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
@@ -19,7 +20,12 @@ namespace NodeCanvasGenerator.Templates
 
         public bool CanGenerate
         {
-            get { return Ctx.Data.Node is ElementNode; }
+            get
+            {
+                var isElementNode = Ctx.Data.Node is ElementNode;
+                var isNotAStateMachine = Ctx.Data.RelatedTypeNode == null || !(Ctx.Data.RelatedTypeNode is StateMachineNode);
+                return isElementNode && isNotAStateMachine;
+            }
         }
 
         private void SetupClass()
