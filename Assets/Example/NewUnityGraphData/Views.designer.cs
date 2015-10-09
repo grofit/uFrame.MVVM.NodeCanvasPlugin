@@ -38,6 +38,11 @@ public class TestViewBase : uFrame.MVVM.ViewBase {
     [UnityEngine.HideInInspector()]
     public AmazingClass _Complex;
     
+    [UnityEngine.SerializeField()]
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public SomeTypeReference _Reference;
+    
     public override string DefaultIdentifier {
         get {
             return base.DefaultIdentifier;
@@ -65,6 +70,7 @@ public class TestViewBase : uFrame.MVVM.ViewBase {
         testview.Name = this._Name;
         testview.IsAmazing = this._IsAmazing;
         testview.Complex = this._Complex;
+        testview.Reference = this._Reference;
     }
     
     public override void Bind() {
@@ -88,8 +94,17 @@ public class TestViewBase : uFrame.MVVM.ViewBase {
         Test.DoSomethingElse.OnNext(command);
     }
     
+    public virtual void ExecuteCommandReference(CommandReferenceCommand command) {
+        command.Sender = Test;
+        Test.CommandReference.OnNext(command);
+    }
+    
     public virtual void ExecuteDoSomethingElse(Boolean arg) {
         Test.DoSomethingElse.OnNext(new DoSomethingElseCommand() { Sender = Test, Argument = arg });
+    }
+    
+    public virtual void ExecuteCommandReference(SomeTypeReference arg) {
+        Test.CommandReference.OnNext(new CommandReferenceCommand() { Sender = Test, Argument = arg });
     }
 }
 
@@ -109,6 +124,11 @@ public class SomeOtherViewBase : uFrame.MVVM.ViewBase {
     [UFGroup("View Model Properties")]
     [UnityEngine.HideInInspector()]
     public AmazingClass _Complex;
+    
+    [UnityEngine.SerializeField()]
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public SomeTypeReference _Reference;
     
     public override string DefaultIdentifier {
         get {
@@ -137,6 +157,7 @@ public class SomeOtherViewBase : uFrame.MVVM.ViewBase {
         someotherview.Name = this._Name;
         someotherview.IsAmazing = this._IsAmazing;
         someotherview.Complex = this._Complex;
+        someotherview.Reference = this._Reference;
     }
     
     public override void Bind() {
@@ -160,7 +181,16 @@ public class SomeOtherViewBase : uFrame.MVVM.ViewBase {
         Test.DoSomethingElse.OnNext(command);
     }
     
+    public virtual void ExecuteCommandReference(CommandReferenceCommand command) {
+        command.Sender = Test;
+        Test.CommandReference.OnNext(command);
+    }
+    
     public virtual void ExecuteDoSomethingElse(Boolean arg) {
         Test.DoSomethingElse.OnNext(new DoSomethingElseCommand() { Sender = Test, Argument = arg });
+    }
+    
+    public virtual void ExecuteCommandReference(SomeTypeReference arg) {
+        Test.CommandReference.OnNext(new CommandReferenceCommand() { Sender = Test, Argument = arg });
     }
 }

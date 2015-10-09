@@ -47,9 +47,9 @@ namespace NodeCanvasGenerator.Templates
             Ctx.CurrentDeclaration._private_(Ctx.Data.Node.Name.AsViewModel(), "_viewModel");
             Ctx.CurrentDeclaration._private_("ViewBase", "_view");
 
-            if (!string.IsNullOrEmpty(Ctx.Data.RelatedType))
+            if (!string.IsNullOrEmpty(Ctx.Data.RelatedTypeName))
             {
-                var argumentField = Ctx.CurrentDeclaration._public_(string.Format("BBParameter<{0}>", Ctx.Data.RelatedType), "CommandArgument");
+                var argumentField = Ctx.CurrentDeclaration._public_(string.Format("BBParameter<{0}>", Ctx.Data.RelatedTypeName), "CommandArgument");
                 argumentField.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(RequiredFieldAttribute)), new CodeAttributeArgument[] { }));
             }
         }
@@ -90,7 +90,7 @@ namespace NodeCanvasGenerator.Templates
             Ctx._("_viewModel = _view.ViewModelObject as {0}", Ctx.Data.Node.Name.AsViewModel());
             Ctx.PopStatements();
 
-            if (!string.IsNullOrEmpty(Ctx.Data.RelatedType))
+            if (!string.IsNullOrEmpty(Ctx.Data.RelatedTypeName))
             {
                 Ctx._("_viewModel.{0}.OnNext(new {0}Command {{ Sender = _viewModel, Argument = CommandArgument.value }})", Ctx.Data.Name);
             }

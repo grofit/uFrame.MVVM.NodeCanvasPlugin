@@ -29,4 +29,8 @@ public class TestController : TestControllerBase {
 
         Debug.Log("The Value Is " + arg);
     }
+
+    public override void CommandReference(TestViewModel viewModel, SomeTypeReference arg) {
+        base.CommandReference(viewModel, arg);
+    }
 }

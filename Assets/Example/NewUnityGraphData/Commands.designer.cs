@@ -33,3 +33,17 @@ public partial class DoSomethingElseCommand : uFrame.MVVM.ViewModelCommand {
         }
     }
 }
+
+public partial class CommandReferenceCommand : uFrame.MVVM.ViewModelCommand {
+    
+    private SomeTypeReference _Argument;
+    
+    public SomeTypeReference Argument {
+        get {
+            return _Argument;
+        }
+        set {
+            _Argument = value;
+        }
+    }
+}

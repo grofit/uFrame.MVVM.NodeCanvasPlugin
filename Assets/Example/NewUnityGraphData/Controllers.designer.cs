@@ -62,6 +62,7 @@ public class TestControllerBase : uFrame.MVVM.Controller {
         // This is called when a TestViewModel is created
         viewModel.DoSomething.Action = this.DoSomethingHandler;
         viewModel.DoSomethingElse.Action = this.DoSomethingElseHandler;
+        viewModel.CommandReference.Action = this.CommandReferenceHandler;
         TestViewModelManager.Add(viewModel);
     }
     
@@ -81,6 +82,13 @@ public class TestControllerBase : uFrame.MVVM.Controller {
         this.DoSomethingElse(command.Sender as TestViewModel, command.Argument);
     }
     
+    public virtual void CommandReferenceHandler(CommandReferenceCommand command) {
+        this.CommandReference(command.Sender as TestViewModel, command.Argument);
+    }
+    
     public virtual void DoSomethingElse(TestViewModel viewModel, Boolean arg) {
+    }
+    
+    public virtual void CommandReference(TestViewModel viewModel, SomeTypeReference arg) {
     }
 }

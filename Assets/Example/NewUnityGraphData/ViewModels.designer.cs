@@ -33,9 +33,13 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
     
     private P<AmazingClass> _ComplexProperty;
     
+    private P<SomeTypeReference> _ReferenceProperty;
+    
     private Signal<DoSomethingCommand> _DoSomething;
     
     private Signal<DoSomethingElseCommand> _DoSomethingElse;
+    
+    private Signal<CommandReferenceCommand> _CommandReference;
     
     public TestViewModelBase(uFrame.Kernel.IEventAggregator aggregator) : 
             base(aggregator) {
@@ -77,6 +81,15 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         }
     }
     
+    public virtual P<SomeTypeReference> ReferenceProperty {
+        get {
+            return _ReferenceProperty;
+        }
+        set {
+            _ReferenceProperty = value;
+        }
+    }
+    
     public virtual Boolean IsNameFrank {
         get {
             return IsNameFrankProperty.Value;
@@ -113,6 +126,15 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         }
     }
     
+    public virtual SomeTypeReference Reference {
+        get {
+            return ReferenceProperty.Value;
+        }
+        set {
+            ReferenceProperty.Value = value;
+        }
+    }
+    
     public virtual Signal<DoSomethingCommand> DoSomething {
         get {
             return _DoSomething;
@@ -131,14 +153,25 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         }
     }
     
+    public virtual Signal<CommandReferenceCommand> CommandReference {
+        get {
+            return _CommandReference;
+        }
+        set {
+            _CommandReference = value;
+        }
+    }
+    
     public override void Bind() {
         base.Bind();
         this.DoSomething = new Signal<DoSomethingCommand>(this);
         this.DoSomethingElse = new Signal<DoSomethingElseCommand>(this);
+        this.CommandReference = new Signal<CommandReferenceCommand>(this);
         _IsNameFrankProperty = new P<Boolean>(this, "IsNameFrank");
         _NameProperty = new P<String>(this, "Name");
         _IsAmazingProperty = new P<Boolean>(this, "IsAmazing");
         _ComplexProperty = new P<AmazingClass>(this, "Complex");
+        _ReferenceProperty = new P<SomeTypeReference>(this, "Reference");
         ResetIsNameFrank();
     }
     
@@ -148,6 +181,10 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
     
     public virtual void ExecuteDoSomethingElse(Boolean argument) {
         this.DoSomethingElse.OnNext(new DoSomethingElseCommand(){Argument = argument});
+    }
+    
+    public virtual void ExecuteCommandReference(SomeTypeReference argument) {
+        this.CommandReference.OnNext(new CommandReferenceCommand(){Argument = argument});
     }
     
     public override void Read(ISerializerStream stream) {
@@ -164,6 +201,7 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         base.FillCommands(list);
         list.Add(new ViewModelCommandInfo("DoSomething", DoSomething) { ParameterType = typeof(void) });
         list.Add(new ViewModelCommandInfo("DoSomethingElse", DoSomethingElse) { ParameterType = typeof(Boolean) });
+        list.Add(new ViewModelCommandInfo("CommandReference", CommandReference) { ParameterType = typeof(SomeTypeReference) });
     }
     
     protected override void FillProperties(System.Collections.Generic.List<uFrame.MVVM.ViewModelPropertyInfo> list) {
@@ -176,6 +214,8 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         list.Add(new ViewModelPropertyInfo(_IsAmazingProperty, false, false, false, false));
         // PropertiesChildItem
         list.Add(new ViewModelPropertyInfo(_ComplexProperty, false, false, false, false));
+        // PropertiesChildItem
+        list.Add(new ViewModelPropertyInfo(_ReferenceProperty, false, false, false, false));
     }
     
     public virtual System.Collections.Generic.IEnumerable<uFrame.MVVM.IObservableProperty> GetIsNameFrankDependents() {

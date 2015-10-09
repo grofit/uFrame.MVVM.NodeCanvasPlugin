@@ -345,6 +345,117 @@ public class GetComplexAction : NodeCanvas.Framework.ActionTask {
 }
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Set Reference")]
+[AgentType(typeof(ViewBase))]
+public class SetReferenceAction : NodeCanvas.Framework.ActionTask {
+    
+    [ParadoxNotion.Design.RequiredFieldAttribute()]
+    public BBParameter<SomeTypeReference> NewValue;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "Set Reference On TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        _viewModel.Reference = NewValue.value;
+        EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Get Reference")]
+[AgentType(typeof(ViewBase))]
+public class GetReferenceAction : NodeCanvas.Framework.ActionTask {
+    
+    [NodeCanvas.Framework.BlackboardOnlyAttribute()]
+    public BBParameter<SomeTypeReference> CurrentValue;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "Get Reference From TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        CurrentValue.value = _viewModel.Reference;
+        EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Execute CommandReference")]
+[AgentType(typeof(ViewBase))]
+public class ExecuteCommandReferenceAction : NodeCanvas.Framework.ActionTask {
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    [ParadoxNotion.Design.RequiredFieldAttribute()]
+    public BBParameter<SomeTypeReference> CommandArgument;
+    
+    protected override string info {
+        get {
+            return "Execute CommandReference On TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        _viewModel.CommandReference.OnNext(new CommandReferenceCommand { Sender = _viewModel, Argument = CommandArgument.value });
+        EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
 [ParadoxNotion.Design.NameAttribute("Get IsNameFrank")]
 [AgentType(typeof(ViewBase))]
 public class GetIsNameFrankAction : NodeCanvas.Framework.ActionTask {
