@@ -7,7 +7,7 @@ using uFrame.Graphs;
 
 namespace NodeCanvasGenerator.Templates
 {
-    [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "Get{0}Action")]
+    [TemplateClass(TemplateLocation.DesignerFile)]
     public class GetPropertyActionsTemplate : IClassTemplate<PropertiesChildItem>
     {
         public TemplateContext<PropertiesChildItem> Ctx { get; set; }
@@ -25,6 +25,7 @@ namespace NodeCanvasGenerator.Templates
         private void SetupClass()
         {
             Ctx.CurrentDeclaration.IsPartial = false;
+            Ctx.CurrentDeclaration.Name = string.Format("{0}Get{1}Action", Ctx.Data.Node.Name.AsViewModel(), Ctx.Data.Name);
 
             Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", Ctx.Data.Node.Name.AsViewModel()));
             Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Get {0}\"", Ctx.Data.Name));

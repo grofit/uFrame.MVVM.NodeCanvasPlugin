@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace NodeCanvasGenerator.Templates
 {
-    [TemplateClass(TemplateLocation.DesignerFile, ClassNameFormat = "Check{0}Action")]
+    [TemplateClass(TemplateLocation.DesignerFile)]
     public class CheckPropertyActionsTemplate : IClassTemplate<PropertiesChildItem>
     {
         public TemplateContext<PropertiesChildItem> Ctx { get; set; }
@@ -28,6 +28,8 @@ namespace NodeCanvasGenerator.Templates
         private void SetupClass()
         {
             Ctx.CurrentDeclaration.IsPartial = false;
+
+            Ctx.CurrentDeclaration.Name = string.Format("{0}Check{1}Action", Ctx.Data.Node.Name.AsViewModel(), Ctx.Data.Name);
 
             Ctx.AddAttribute(typeof(CategoryAttribute), string.Format("\"ViewModels/{0}\"", Ctx.Data.Node.Name.AsViewModel()));
             Ctx.AddAttribute(typeof(NameAttribute), string.Format("\"Check {0}\"", Ctx.Data.Name));
