@@ -15,6 +15,7 @@ using System.Linq;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using uFrame.MVVM;
+using Invert.StateMachine;
 
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
@@ -452,6 +453,79 @@ public class TestViewModelExecuteCommandReferenceAction : NodeCanvas.Framework.A
         }
         _viewModel.CommandReference.OnNext(new CommandReferenceCommand { Sender = _viewModel, Argument = CommandArgument.value });
         EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Get TheStateMachines Current State")]
+[AgentType(typeof(ViewBase))]
+public class TestViewModelGetTheStateMachineCurrentStateAction : NodeCanvas.Framework.ActionTask {
+    
+    [NodeCanvas.Framework.BlackboardOnlyAttribute()]
+    public BBParameter<State> CurrentState;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "Get Current State From TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        CurrentState.value = _viewModel.TheStateMachine;
+        EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Check TheStateMachines State")]
+[AgentType(typeof(ViewBase))]
+public class TestViewModelCheckTheStateMachineCurrentStateAction : NodeCanvas.Framework.ConditionTask {
+    
+    [ParadoxNotion.Design.RequiredFieldAttribute()]
+    public BBParameter<String> CurrentStateName;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "TheStateMachines Current State Is " + CurrentStateName;
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override bool OnCheck() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            return false;
+        }
+        return _viewModel.TheStateMachine.Name.ToLower() == CurrentStateName.value.ToLower();
     }
 }
 

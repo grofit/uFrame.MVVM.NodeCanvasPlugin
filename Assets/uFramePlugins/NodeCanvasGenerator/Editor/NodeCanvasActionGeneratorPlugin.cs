@@ -21,7 +21,9 @@ namespace NodeCanvasGenerator.Editor
             // Register the code template
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, SetPropertyActionsTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, GetPropertyActionsTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, GetCurrentStateActionsTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, CheckPropertyActionsTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertiesChildItem, CheckStateActionsTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<CommandsChildItem, ExecuteCommandsActionsTemplate>();
 
             framework.ComputedProperty.AddCodeTemplate<ComputedPropertyActionsTemplate>();
