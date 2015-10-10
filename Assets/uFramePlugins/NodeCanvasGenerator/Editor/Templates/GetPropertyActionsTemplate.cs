@@ -1,4 +1,5 @@
 using System.CodeDom;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
@@ -47,6 +48,8 @@ namespace NodeCanvasGenerator.Templates
             Ctx.TryAddNamespace("NodeCanvas.Framework");
             Ctx.TryAddNamespace("ParadoxNotion.Design");
             Ctx.TryAddNamespace("uFrame.MVVM");
+            
+            if (Ctx.Data.Type != null) { Ctx.TryAddNamespace(Ctx.Data.Type.Namespace); }
         }
 
         private void SetupMembers()

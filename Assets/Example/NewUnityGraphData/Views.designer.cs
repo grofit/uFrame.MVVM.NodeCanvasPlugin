@@ -43,6 +43,11 @@ public class TestViewBase : uFrame.MVVM.ViewBase {
     [UnityEngine.HideInInspector()]
     public SomeTypeReference _Reference;
     
+    [UnityEngine.SerializeField()]
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Vector3 _SomeUnityType;
+    
     public override string DefaultIdentifier {
         get {
             return base.DefaultIdentifier;
@@ -71,6 +76,7 @@ public class TestViewBase : uFrame.MVVM.ViewBase {
         testview.IsAmazing = this._IsAmazing;
         testview.Complex = this._Complex;
         testview.Reference = this._Reference;
+        testview.SomeUnityType = this._SomeUnityType;
     }
     
     public override void Bind() {
@@ -130,6 +136,11 @@ public class SomeOtherViewBase : uFrame.MVVM.ViewBase {
     [UnityEngine.HideInInspector()]
     public SomeTypeReference _Reference;
     
+    [UnityEngine.SerializeField()]
+    [UFGroup("View Model Properties")]
+    [UnityEngine.HideInInspector()]
+    public Vector3 _SomeUnityType;
+    
     public override string DefaultIdentifier {
         get {
             return base.DefaultIdentifier;
@@ -158,6 +169,7 @@ public class SomeOtherViewBase : uFrame.MVVM.ViewBase {
         someotherview.IsAmazing = this._IsAmazing;
         someotherview.Complex = this._Complex;
         someotherview.Reference = this._Reference;
+        someotherview.SomeUnityType = this._SomeUnityType;
     }
     
     public override void Bind() {

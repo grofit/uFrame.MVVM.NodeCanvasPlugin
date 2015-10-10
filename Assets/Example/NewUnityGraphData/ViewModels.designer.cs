@@ -37,6 +37,8 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
     
     private P<SomeTypeReference> _ReferenceProperty;
     
+    private P<Vector3> _SomeUnityTypeProperty;
+    
     private Signal<DoSomethingCommand> _DoSomething;
     
     private Signal<DoSomethingElseCommand> _DoSomethingElse;
@@ -110,6 +112,15 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         }
     }
     
+    public virtual P<Vector3> SomeUnityTypeProperty {
+        get {
+            return _SomeUnityTypeProperty;
+        }
+        set {
+            _SomeUnityTypeProperty = value;
+        }
+    }
+    
     public virtual Boolean IsNameFrank {
         get {
             return IsNameFrankProperty.Value;
@@ -155,6 +166,15 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         }
     }
     
+    public virtual Vector3 SomeUnityType {
+        get {
+            return SomeUnityTypeProperty.Value;
+        }
+        set {
+            SomeUnityTypeProperty.Value = value;
+        }
+    }
+    
     public virtual Signal<DoSomethingCommand> DoSomething {
         get {
             return _DoSomething;
@@ -192,6 +212,7 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         _IsAmazingProperty = new P<Boolean>(this, "IsAmazing");
         _ComplexProperty = new P<AmazingClass>(this, "Complex");
         _ReferenceProperty = new P<SomeTypeReference>(this, "Reference");
+        _SomeUnityTypeProperty = new P<Vector3>(this, "SomeUnityType");
         _TheStateMachineProperty = new SomeStateMachine(this, "TheStateMachine");
         ResetIsNameFrank();
         TheStateMachineProperty.IsFrank.AddComputer(IsNameFrankProperty);
@@ -213,12 +234,14 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         base.Read(stream);
         this.IsAmazing = stream.DeserializeBool("IsAmazing");;
         this._TheStateMachineProperty.SetState(stream.DeserializeString("TheStateMachine"));
+        this.SomeUnityType = stream.DeserializeVector3("SomeUnityType");;
     }
     
     public override void Write(ISerializerStream stream) {
         base.Write(stream);
         stream.SerializeBool("IsAmazing", this.IsAmazing);
         stream.SerializeString("TheStateMachine", this.TheStateMachine.Name);;
+        stream.SerializeVector3("SomeUnityType", this.SomeUnityType);
     }
     
     protected override void FillCommands(System.Collections.Generic.List<uFrame.MVVM.ViewModelCommandInfo> list) {
@@ -242,6 +265,8 @@ public partial class TestViewModelBase : uFrame.MVVM.ViewModel {
         list.Add(new ViewModelPropertyInfo(_ReferenceProperty, false, false, false, false));
         // PropertiesChildItem
         list.Add(new ViewModelPropertyInfo(_TheStateMachineProperty, false, false, false, false));
+        // PropertiesChildItem
+        list.Add(new ViewModelPropertyInfo(_SomeUnityTypeProperty, false, false, false, false));
     }
     
     public virtual System.Collections.Generic.IEnumerable<uFrame.MVVM.IObservableProperty> GetIsNameFrankDependents() {

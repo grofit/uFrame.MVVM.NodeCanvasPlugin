@@ -16,6 +16,7 @@ using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using uFrame.MVVM;
 using Invert.StateMachine;
+using UnityEngine;
 
 
 [ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
@@ -526,6 +527,80 @@ public class TestViewModelCheckTheStateMachineCurrentStateAction : NodeCanvas.Fr
             return false;
         }
         return _viewModel.TheStateMachine.Name.ToLower() == CurrentStateName.value.ToLower();
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Set SomeUnityType")]
+[AgentType(typeof(ViewBase))]
+public class TestViewModelSetSomeUnityTypeAction : NodeCanvas.Framework.ActionTask {
+    
+    [ParadoxNotion.Design.RequiredFieldAttribute()]
+    public BBParameter<Vector3> NewValue;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "Set SomeUnityType On TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        _viewModel.SomeUnityType = NewValue.value;
+        EndAction(true);
+    }
+}
+
+[ParadoxNotion.Design.CategoryAttribute("ViewModels/TestViewModel")]
+[ParadoxNotion.Design.NameAttribute("Get SomeUnityType")]
+[AgentType(typeof(ViewBase))]
+public class TestViewModelGetSomeUnityTypeAction : NodeCanvas.Framework.ActionTask {
+    
+    [NodeCanvas.Framework.BlackboardOnlyAttribute()]
+    public BBParameter<Vector3> CurrentValue;
+    
+    private TestViewModel _viewModel;
+    
+    private ViewBase _view;
+    
+    protected override string info {
+        get {
+            return "Get SomeUnityType From TestViewModel";
+        }
+    }
+    
+    protected override string OnInit() {
+        _view = agent.GetComponent<ViewBase>();
+        return base.OnInit();
+    }
+    
+    protected override void OnExecute() {
+        if (_view.IsBound) {
+            if (_viewModel == null) {
+                _viewModel = _view.ViewModelObject as TestViewModel;
+            }
+        }
+        else {
+            EndAction(false); return;
+        }
+        CurrentValue.value = _viewModel.SomeUnityType;
+        EndAction(true);
     }
 }
 

@@ -1,4 +1,5 @@
 using System.CodeDom;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.StateMachine;
 using Invert.uFrame.MVVM;
